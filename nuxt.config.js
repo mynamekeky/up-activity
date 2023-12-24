@@ -3,8 +3,8 @@ import colors from 'vuetify/es5/util/colors'
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - up-activity',
-    title: 'up-activity',
+    titleTemplate: '%s - mesitthi',
+    title: 'mesitthi',
     htmlAttrs: {
       lang: 'en'
     },
@@ -15,8 +15,13 @@ export default {
       { name: 'format-detection', content: 'telephone=no' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-    ]
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/icon?family=Material+Icons' },
+      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&family=Poppins:wght@300;400;500;600&display=swap' }
+    ],
+    script: [
+      { src: 'https://static.line-scdn.net/liff/edge/2.1/sdk.js' }
+    ],
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
@@ -38,10 +43,38 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
+    'nuxt-icon',
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/content
     '@nuxt/content',
+    [
+      '@nuxtjs/firebase',
+      {
+        config: {
+          apiKey: "AIzaSyA3YIE3H7wlYau3FGetMcBXECm78YZK-oE",
+          authDomain: "up-activity.firebaseapp.com",
+          databaseURL: "https://up-activity-default-rtdb.asia-southeast1.firebasedatabase.app",
+          projectId: "up-activity",
+          storageBucket: "up-activity.appspot.com",
+          messagingSenderId: "129782082423",
+          appId: "1:129782082423:web:740f387fe76d358a9c4f72",
+          measurementId: "G-NNV270GNWZ"
+        },
+        services: {
+          auth: {
+            persistence: 'local',
+            initialize: {
+              onAuthStateChangedAction: 'onAuthStateChangedAction',
+              subscribeManually: false
+            },
+            ssr: false,
+          },
+          firestore: true,
+          storage: true
+        }
+      }
+    ]
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -57,7 +90,7 @@ export default {
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
     theme: {
-      dark: true,
+      dark: false,
       themes: {
         dark: {
           primary: colors.blue.darken2,
