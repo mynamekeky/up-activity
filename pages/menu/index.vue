@@ -41,7 +41,7 @@
                     </v-btn>
                 </div>
                 <div class="mt-5">
-                    <v-btn text width="100%">
+                    <v-btn text width="100%" @click="status">
                         <svg width="20" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M16 4C15.45 4 14.9793 3.80433 14.588 3.413C14.1967 3.02167 14.0007 2.55067 14 2C14 1.45 14.196 0.979333 14.588 0.588C14.98 0.196667 15.4507 0.000666667 16 0C16.55 0 17.021 0.196 17.413 0.588C17.805 0.98 18.0007 1.45067 18 2C18 2.55 17.8043 3.021 17.413 3.413C17.0217 3.805 16.5507 4.00067 16 4ZM15 19V12C15 11.3333 14.829 10.7333 14.487 10.2C14.145 9.66667 13.7077 9.25 13.175 8.95L14.05 6.375C14.1833 5.95833 14.4293 5.625 14.788 5.375C15.1467 5.125 15.5507 5 16 5C16.45 5 16.8543 5.125 17.213 5.375C17.5717 5.625 17.8173 5.95833 17.95 6.375L20.05 12.675C20.1667 13.0083 20.121 13.3127 19.913 13.588C19.705 13.8633 19.434 14.0007 19.1 14H18V19C18 19.2833 17.904 19.521 17.712 19.713C17.52 19.905 17.2827 20.0007 17 20H16C15.7167 20 15.4793 19.904 15.288 19.712C15.0967 19.52 15.0007 19.2827 15 19ZM10.5 9.5C10.0833 9.5 9.72933 9.35433 9.438 9.063C9.14667 8.77167 9.00067 8.41733 9 8C9 7.58333 9.146 7.22933 9.438 6.938C9.73 6.64667 10.084 6.50067 10.5 6.5C10.9167 6.5 11.271 6.646 11.563 6.938C11.855 7.23 12.0007 7.584 12 8C12 8.41667 11.8543 8.771 11.563 9.063C11.2717 9.355 10.9173 9.50067 10.5 9.5ZM3.5 4C2.95 4 2.47933 3.80433 2.088 3.413C1.69667 3.02167 1.50067 2.55067 1.5 2C1.5 1.45 1.696 0.979333 2.088 0.588C2.48 0.196667 2.95067 0.000666667 3.5 0C4.05 0 4.521 0.196 4.913 0.588C5.305 0.98 5.50067 1.45067 5.5 2C5.5 2.55 5.30433 3.021 4.913 3.413C4.52167 3.805 4.05067 4.00067 3.5 4ZM1.5 19V13H1C0.716667 13 0.479333 12.904 0.288 12.712C0.0966668 12.52 0.000666667 12.2827 0 12V7C0 6.45 0.196 5.97933 0.588 5.588C0.98 5.19667 1.45067 5.00067 2 5H5C5.55 5 6.021 5.196 6.413 5.588C6.805 5.98 7.00067 6.45067 7 7V12C7 12.2833 6.904 12.521 6.712 12.713C6.52 12.905 6.28267 13.0007 6 13H5.5V19C5.5 19.2833 5.404 19.521 5.212 19.713C5.02 19.905 4.78267 20.0007 4.5 20H2.5C2.21667 20 1.97933 19.904 1.788 19.712C1.59667 19.52 1.50067 19.2827 1.5 19ZM9 19V16C8.71667 16 8.47933 15.904 8.288 15.712C8.09667 15.52 8.00067 15.2827 8 15V12C8 11.5833 8.146 11.2293 8.438 10.938C8.73 10.6467 9.084 10.5007 9.5 10.5H11.5C11.9167 10.5 12.271 10.646 12.563 10.938C12.855 11.23 13.0007 11.584 13 12V15C13 15.2833 12.904 15.521 12.712 15.713C12.52 15.905 12.2827 16.0007 12 16V19C12 19.2833 11.904 19.521 11.712 19.713C11.52 19.905 11.2827 20.0007 11 20H10C9.71667 20 9.47933 19.904 9.288 19.712C9.09667 19.52 9.00067 19.2827 9 19Z"
@@ -76,7 +76,7 @@
                     </v-btn>
                 </div>
                 <div class="mt-5">
-                    <v-btn text width="100%">
+                    <v-btn text width="100%" @click="personal">
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"
                             xmlns:xlink="http://www.w3.org/1999/xlink">
                             <rect width="20" height="20" fill="url(#pattern0)" />
@@ -91,7 +91,7 @@
                         <div style="padding-top: 3px; font-size: 15px;" class="pl-1">
                             คุณลักษณะส่วนตัว
                         </div>
-                        <div class="pt-2 pl-1" v-if="dataStatus == null">
+                        <div class="pt-2 pl-1" v-if="dataPersonal == null">
                             <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <g clip-path="url(#clip0_60_433)">
                                     <path
@@ -116,7 +116,7 @@
                     </v-btn>
                 </div>
                 <div class="mt-5">
-                    <v-btn text width="100%">
+                    <v-btn text width="100%" @click="salary">
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" clip-rule="evenodd"
                                 d="M10.052 0H9.948C9.049 0 8.3 4.30877e-08 7.706 0.0771085C7.078 0.158072 6.511 0.337349 6.056 0.775904C5.6 1.21542 5.414 1.76193 5.33 2.36627C5.273 2.77783 5.256 3.76 5.252 4.60241C3.23 4.66699 2.015 4.89446 1.172 5.70795C-1.19209e-07 6.83663 0 8.65446 0 12.2892C0 15.9239 -1.19209e-07 17.7417 1.172 18.8704C2.343 20 4.229 20 8 20H12C15.771 20 17.657 20 18.828 18.8704C20 17.7417 20 15.9239 20 12.2892C20 8.65446 20 6.83663 18.828 5.70795C17.985 4.89446 16.77 4.66699 14.748 4.60337C14.744 3.76 14.728 2.77783 14.67 2.36723C14.586 1.76193 14.4 1.21542 13.944 0.776867C13.489 0.337349 12.922 0.158072 12.294 0.0771085C11.7 4.30877e-08 10.95 0 10.052 0ZM13.248 4.58024C13.243 3.76386 13.229 2.88578 13.184 2.55904C13.121 2.1147 13.014 1.92386 12.884 1.79855C12.754 1.67325 12.556 1.57012 12.094 1.5094C11.612 1.44771 10.964 1.44578 10 1.44578C9.036 1.44578 8.388 1.44771 7.905 1.51036C7.444 1.57012 7.246 1.67325 7.116 1.79952C6.986 1.92482 6.879 2.1147 6.816 2.55904C6.771 2.88675 6.756 3.76386 6.752 4.58024C7.143 4.57831 7.56 4.57831 8 4.57831H12C12.441 4.57831 12.857 4.57831 13.248 4.58024ZM10 7.71084C10.1989 7.71084 10.3897 7.78701 10.5303 7.92257C10.671 8.05814 10.75 8.24201 10.75 8.43374V8.44337C11.839 8.70747 12.75 9.53542 12.75 10.6824C12.75 10.8741 12.671 11.058 12.5303 11.1936C12.3897 11.3291 12.1989 11.4053 12 11.4053C11.8011 11.4053 11.6103 11.3291 11.4697 11.1936C11.329 11.058 11.25 10.8741 11.25 10.6824C11.25 10.3123 10.824 9.79952 10 9.79952C9.176 9.79952 8.75 10.3123 8.75 10.6824C8.75 11.0525 9.176 11.5663 10 11.5663C11.385 11.5663 12.75 12.4916 12.75 13.8959C12.75 15.0429 11.839 15.8699 10.75 16.1349V16.1446C10.75 16.3363 10.671 16.5202 10.5303 16.6557C10.3897 16.7913 10.1989 16.8675 10 16.8675C9.80109 16.8675 9.61032 16.7913 9.46967 16.6557C9.32902 16.5202 9.25 16.3363 9.25 16.1446V16.1349C8.161 15.8708 7.25 15.0429 7.25 13.8959C7.25 13.7042 7.32902 13.5203 7.46967 13.3847C7.61032 13.2492 7.80109 13.173 8 13.173C8.19891 13.173 8.38968 13.2492 8.53033 13.3847C8.67098 13.5203 8.75 13.7042 8.75 13.8959C8.75 14.266 9.176 14.7788 10 14.7788C10.824 14.7788 11.25 14.266 11.25 13.8959C11.25 13.5258 10.824 13.012 10 13.012C8.615 13.012 7.25 12.0867 7.25 10.6824C7.25 9.53542 8.161 8.70747 9.25 8.44337V8.43374C9.25 8.24201 9.32902 8.05814 9.46967 7.92257C9.61032 7.78701 9.80109 7.71084 10 7.71084Z"
@@ -125,7 +125,7 @@
                         <div style="padding-top: 3px; font-size: 15px;" class="pl-1">
                             อาชีพและรายได้
                         </div>
-                        <div class="pt-2 pl-1" v-if="dataStatus == null">
+                        <div class="pt-2 pl-1" v-if="dataSalary == null">
                             <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <g clip-path="url(#clip0_60_433)">
                                     <path
@@ -150,7 +150,7 @@
                     </v-btn>
                 </div>
                 <div class="mt-5">
-                    <v-btn text width="100%">
+                    <v-btn text width="100%" @click="rights">
                         <svg width="20" height="20" viewBox="0 0 18 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M18 4L9 0L0 4V10C0 15.55 3.84 20.74 9 22C11.3 21.44 13.33 20.1 14.88 18.29L11.76 15.17C10.7987 15.8054 9.64722 16.0888 8.50083 15.9721C7.35443 15.8555 6.28364 15.346 5.47 14.53C4.53338 13.592 4.00731 12.3206 4.00731 10.995C4.00731 9.66942 4.53338 8.39803 5.47 7.46C6.40803 6.52338 7.67942 5.99731 9.005 5.99731C10.3306 5.99731 11.602 6.52338 12.54 7.46C13.354 8.27482 13.8621 9.34538 13.9787 10.4912C14.0952 11.637 13.8132 12.7879 13.18 13.75L16.08 16.65C17.29 14.69 18 12.38 18 10V4Z"
@@ -162,7 +162,7 @@
                         <div style="padding-top: 3px; font-size: 15px;" class="pl-1">
                             สิทธิและสวัสดิการที่ได้รับในปัจจุบัน
                         </div>
-                        <div class="pt-2 pl-1" v-if="dataStatus == null">
+                        <div class="pt-2 pl-1" v-if="dataRights == null">
                             <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <g clip-path="url(#clip0_60_433)">
                                     <path
@@ -187,7 +187,7 @@
                     </v-btn>
                 </div>
                 <div class="mt-5">
-                    <v-btn text width="100%">
+                    <v-btn text width="100%" @click="benefit">
                         <svg width="20" height="20" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M6.5 11H4V8H6.5V5.5H9.5V8H12V11H9.5V13.5H6.5V11ZM8 0L0 3V9.09C0 14.14 3.41 18.85 8 20C12.59 18.85 16 14.14 16 9.09V3L8 0Z"
@@ -196,7 +196,7 @@
                         <div style="padding-top: 3px; font-size: 15px;" class="pl-1">
                             สวัสดิการสำหรับตัวเองเพื่อสุขภาพ
                         </div>
-                        <div class="pt-2 pl-1" v-if="dataStatus == null">
+                        <div class="pt-2 pl-1" v-if="dataBenefit == null">
                             <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <g clip-path="url(#clip0_60_433)">
                                     <path
@@ -221,7 +221,7 @@
                     </v-btn>
                 </div>
                 <div class="mt-5">
-                    <v-btn text width="100%">
+                    <v-btn text width="100%" @click="requiredRights">
                         <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M14.48 7.41005C14.09 7.80005 13.44 7.80005 13.05 7.41005L8.58004 2.95005L1.53004 9.99005L0.870036 9.36005C0.308234 8.79755 -0.00732422 8.03505 -0.00732422 7.24005C-0.00732422 6.44505 0.308234 5.68255 0.870036 5.12005L5.11004 0.88005C5.67254 0.318248 6.43503 0.00268962 7.23004 0.00268962C8.02504 0.00268962 8.78753 0.318248 9.35004 0.88005L14.48 6.00005C14.87 6.39005 14.87 7.02005 14.48 7.41005ZM15.18 5.29005C15.96 6.07005 15.96 7.34005 15.18 8.12005C13.91 9.39005 12.57 8.34005 12.35 8.12005L8.59004 4.36005L3.02004 9.93005C2.92733 10.0226 2.85378 10.1325 2.8036 10.2534C2.75342 10.3744 2.72759 10.5041 2.72759 10.635C2.72759 10.766 2.75342 10.8957 2.8036 11.0167C2.85378 11.1376 2.92733 11.2475 3.02004 11.34C3.41004 11.7301 4.04004 11.7301 4.44004 11.34L9.06004 6.72005L9.77004 7.43005L5.15004 12.05C5.05733 12.1426 4.98378 12.2525 4.9336 12.3734C4.88342 12.4944 4.85759 12.6241 4.85759 12.755C4.85759 12.886 4.88342 13.0157 4.9336 13.1367C4.98378 13.2576 5.05733 13.3675 5.15004 13.46C5.54004 13.85 6.17004 13.85 6.57004 13.46L11.19 8.84005L11.9 9.55005L7.28004 14.17C7.18745 14.2626 7.11401 14.3725 7.06391 14.4935C7.0138 14.6145 6.98802 14.7441 6.98802 14.875C6.98802 15.006 7.0138 15.1356 7.06391 15.2566C7.11401 15.3776 7.18745 15.4875 7.28004 15.58C7.37262 15.6726 7.48253 15.7461 7.60349 15.7962C7.72446 15.8463 7.8541 15.8721 7.98504 15.8721C8.11597 15.8721 8.24562 15.8463 8.36658 15.7962C8.48754 15.7461 8.59745 15.6726 8.69004 15.58L13.31 10.96L14.02 11.67L9.40004 16.2901C9.30745 16.3826 9.23401 16.4925 9.18391 16.6135C9.1338 16.7345 9.10802 16.8641 9.10802 16.9951C9.10802 17.126 9.1338 17.2556 9.18391 17.3766C9.23401 17.4976 9.30745 17.6075 9.40004 17.7001C9.58701 17.887 9.84061 17.9921 10.105 17.9921C10.236 17.9921 10.3656 17.9663 10.4866 17.9162C10.6075 17.8661 10.7175 17.7926 10.81 17.7001L19.13 9.36005C19.6918 8.79755 20.0074 8.03505 20.0074 7.24005C20.0074 6.44505 19.6918 5.68255 19.13 5.12005L14.89 0.88005C14.3379 0.328479 13.5926 0.0137082 12.8122 0.00250675C12.0318 -0.00869474 11.2778 0.284554 10.71 0.82005L15.18 5.29005Z"
@@ -230,7 +230,7 @@
                         <div style="padding-top: 3px; font-size: 15px;" class="pl-1">
                             สิทธิที่ต้องการ
                         </div>
-                        <div class="pt-2 pl-1" v-if="dataStatus == null">
+                        <div class="pt-2 pl-1" v-if="dataRequiredRights == null">
                             <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <g clip-path="url(#clip0_60_433)">
                                     <path
@@ -262,8 +262,12 @@
 export default {
     data() {
         return {
-            dataStatus: null,
-            dataPersonal: null,
+            dataStatus: '',
+            dataPersonal: '',
+            dataSalary: '',
+            dataRights: '',
+            dataBenefit: '',
+            dataRequiredRights: ''
         }
     },
     mounted() {
@@ -276,6 +280,10 @@ export default {
                     await this.checkData()
                     this.dataStatus = await this.getDataStatus()
                     this.dataPersonal = await this.getDataPersonal()
+                    this.dataSalary = await this.getDataSalary()
+                    this.dataRights = await this.getDataRights()
+                    this.dataBenefit = await this.getDataBenefit()
+                    this.dataRequiredRights = await this.getDataRequiredRights()
                 })
             } else {
                 liff.login()
@@ -293,8 +301,6 @@ export default {
                 const data = res.data()
                 if (data == null) {
                     this.$router.push('/register')
-                } else {
-                    console.log(data)
                 }
             });
         },
@@ -314,7 +320,7 @@ export default {
                 }
                 return await data
             })
-            return getData
+            return await getData
         },
         async getDataPersonal() {
             const getData = await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).collection("info").doc("personal").get().then(async (res) => {
@@ -340,6 +346,84 @@ export default {
             })
             return getData
         },
+        async getDataRights() {
+            const getData = await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).collection("info").doc("rights").get().then(async (res) => {
+                let data = res.data()
+                if (data == null) {
+                    data = null
+                } else {
+                    data = res.data()
+                }
+                return await data
+            })
+            return getData
+        },
+        async getDataBenefit() {
+            const getData = await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).collection("info").doc("benefit").get().then(async (res) => {
+                let data = res.data()
+                if (data == null) {
+                    data = null
+                } else {
+                    data = res.data()
+                }
+                return await data
+            })
+            return getData
+        },
+        async getDataRequiredRights() {
+            const getData = await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).collection("info").doc("requiredRights").get().then(async (res) => {
+                let data = res.data()
+                if (data == null) {
+                    data = null
+                } else {
+                    data = res.data()
+                }
+                return await data
+            })
+            return getData
+        },
+        async status() {
+            if (await this.dataStatus == null || undefined) {
+                this.$router.push('/menu/status/createStatus')
+            } else {
+                this.$router.push('/menu/status')
+            }
+        },
+        async personal() {
+            if (await this.dataPersonal == null || undefined) {
+                this.$router.push('/menu/personal/createPersonal')
+            } else {
+                this.$router.push('/menu/personal')
+            }
+        },
+        async salary() {
+            if (await this.dataSalary == null || undefined) {
+                this.$router.push('/menu/salary/createSalary')
+            } else {
+                this.$router.push('/menu/salary')
+            }
+        },
+        async rights() {
+            if (await this.dataRights == null || undefined) {
+                this.$router.push('/menu/rights/createRights')
+            } else {
+                this.$router.push('/menu/rights')
+            }
+        },
+        async benefit() {
+            if (await this.dataBenefit == null || undefined) {
+                this.$router.push('/menu/benefit/createBenefit')
+            } else {
+                this.$router.push('/menu/benefit')
+            }
+        },
+        async requiredRights() {
+            if (await this.dataRequiredRights == null || undefined) {
+                this.$router.push('/menu/requiredRights/createRequiredRights')
+            } else {
+                this.$router.push('/menu/requiredRights')
+            }
+        }
     }
 }
 </script>

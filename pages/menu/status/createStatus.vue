@@ -12,7 +12,7 @@
                 </div>
             </v-btn>
             <div class="text-center mt-1 mb-6" style="font-size: 18px; font-weight: 500; color: #1976D2;">
-                แก้ไขสถานภาพ
+                สถานภาพ
             </div>
             <v-form>
                 <v-col>
@@ -43,7 +43,7 @@
                     </div>
                 </v-col>
                 <div class="text-center mt-7">
-                    <v-btn color="primary" class="next-btn" width="283" @click="update">ยืนยัน</v-btn>
+                    <v-btn color="primary" class="next-btn" width="283" @click="create">ยืนยัน</v-btn>
                 </div>
             </v-form>
         </v-col>
@@ -70,7 +70,7 @@ export default {
             if (liff.isLoggedIn()) {
                 liff.getProfile().then(async profile => {
                     this.$store.dispatch('setLine', profile);
-                    await this.loadData();
+                    await this.loadData()
                 })
             } else {
                 liff.login();
@@ -86,8 +86,7 @@ export default {
         async loadData() {
             const getProfile = await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).collection("info").doc("status").get().then((res) => {
                 if (res.data() != null || undefined) {
-                    this.form.status = res.data().status
-                    this.form.family_type = res.data().family_type
+                    this.$router.push('/menu/status');
                 }
             });
 
@@ -99,6 +98,7 @@ export default {
             let errorMsg = ''
             const validatorField = [
                 'status',
+                'family_type'
             ]
             validatorField.forEach((field) => {
                 if (this.form[field] == '') {
@@ -120,12 +120,9 @@ export default {
         back() {
             this.$router.push('/menu')
         },
-        editProfile() {
-            this.$router.push('/menu/profile/editProfile')
-        },
-        async update() {
+        async create() {
             if (this.validate()) {
-                await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).collection("info").doc("status").update(this.form).then((res) => {
+                await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).collection("info").doc("status").set(this.form).then((res) => {
                     this.$router.push('/menu/status');
                 })
             }

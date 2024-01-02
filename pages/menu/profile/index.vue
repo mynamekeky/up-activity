@@ -44,7 +44,7 @@
                     </v-row>
                 </v-col>
                 <div class="text-center mt-7">
-                    <v-btn color="primary" class="next-btn" width="106.68" @click="editProfile">แก้ไขข้อมูล</v-btn>
+                    <v-btn color="primary" class="next-btn" width="283" @click="editProfile">แก้ไขข้อมูล</v-btn>
                 </div>
             </v-form>
         </v-col>

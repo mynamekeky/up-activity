@@ -16,40 +16,34 @@
             </div>
             <v-form>
                 <v-col>
-                    <v-select label="label" :items="['โสด', 'สมรส', 'หย่าร้าง', 'ม่าย', 'แยกกันอยู่']" v-model="form.status"
-                        :menu-props="{ offsetY: true }" hint="เลือกสถานะ" persistent-hint></v-select>
-                    <!-- <v-row>
-                        <v-col>
-                            <v-text-field v-model="form.firstname" name="name" label="ชื่อ" id="id" readonly></v-text-field>
-                        </v-col>
-                        <v-col>
-                            <v-text-field v-model="form.lastname" name="name" label="นามสกุล" id="id"
-                                readonly></v-text-field>
-                        </v-col>
-                    </v-row>
-                    <v-text-field v-model="form.email" name="อีเมล" label="อีเมล" id="id" readonly></v-text-field>
-                    <v-text-field v-model="form.phone" label="เบอร์โทรศัพท์" readonly></v-text-field>
-                    <v-row>
-                        <v-col>
-                            <v-text-field v-model="form.birthday" label="วันเกิด" readonly>
-                            </v-text-field>
-                        </v-col>
-                        <v-col>
-                            <v-radio-group v-model="radios" label="เพศ" style="margin-top: 0;">
-                                <div style="display: flex;">
-                                    <v-radio label="หญิง" :value="1" style="margin-bottom: 0%; margin-right: 10px;"
-                                        readonly></v-radio>
-                                    <v-radio label="ชาย" :value="2" readonly></v-radio>
-                                </div>
-                            </v-radio-group>
-                        </v-col>
-                    </v-row> -->
+                    <v-select label="เลือกสถานภาพของท่าน" :items="['โสด', 'สมรส', 'หย่าร้าง', 'ม่าย', 'แยกกันอยู่']"
+                        v-model="form.status" :menu-props="{ offsetY: true }" readonly></v-select>
+                    <div class="mt-3" style="font-size: 17px;">
+                        คุณลักษณะครอบครัว
+                    </div>
+                    <div>
+                        <p class="mt-1" style="font-size: 13px;">โปรดเลือกลักษณะครอบครัวของท่าน(เลือกได้มากกว่า 1 ข้อ)
+                        </p>
+                        <v-checkbox v-model="form.family_type" label="มีสมาชิกครอบครัวเป็นเกษตรกร"
+                            value="มีสมาชิกครอบครัวเป็นเกษตรกร" hide-details readonly></v-checkbox>
+                        <v-checkbox v-model="form.family_type" label="มีเด็กอายุต่ำกว่า 6 ปีบริบูรณ์ จำนวน 1 คน"
+                            value="มีเด็กอายุต่ำกว่า 6 ปีบริบูรณ์ จำนวน 1 คน" hide-details readonly></v-checkbox>
+                        <v-checkbox v-model="form.family_type" label="มีเด็กอายุต่ำกว่า 6 ปีบริบูรณ์ มากกว่า 1 คน"
+                            value="มีเด็กอายุต่ำกว่า 6 ปีบริบูรณ์ มากกว่า 1 คน" hide-details readonly></v-checkbox>
+                        <v-checkbox v-model="form.family_type" label="มีเด็กที่รับเลี้ยงจากบ้านพักเด็กและครอบครัว"
+                            value="มีเด็กที่รับเลี้ยงจากบ้านพักเด็กและครอบครัว" hide-details readonly></v-checkbox>
+                        <v-checkbox v-model="form.family_type" label="มีสมาชิกครอบครัวเป็นผู้ติดเชื้อ HIV (โรคเอดส์)"
+                            value="มีสมาชิกครอบครัวเป็นผู้ติดเชื้อ HIV (โรคเอดส์)" hide-details readonly></v-checkbox>
+                        <v-checkbox v-model="form.family_type" label="มีสมาชิกครอบครัวเป็นผู้พิการหรือคนชรา"
+                            value="มีสมาชิกครอบครัวเป็นผู้พิการหรือคนชรา" hide-details readonly></v-checkbox>
+                        <v-checkbox v-model="form.family_type" label="ไม่มีครอบครัว เช่น กำพร้า ถูกทอดทิ้ง ฯลฯ"
+                            value="ไม่มีครอบครัว เช่น กำพร้า ถูกทอดทิ้ง ฯลฯ" hide-details readonly></v-checkbox>
+                        <v-checkbox v-model="form.family_type" label="ไม่มีลักษณะดังที่กล่าวมา"
+                            value="ไม่มีลักษณะดังที่กล่าวมา" hide-details readonly></v-checkbox>
+                    </div>
                 </v-col>
-                <!-- <div class="text-center mt-7">
-                    <v-btn color="primary" class="next-btn" width="106.68" @click="editProfile">แก้ไขข้อมูล</v-btn>
-                </div> -->
                 <div class="text-center mt-7">
-                    <v-btn color="primary" class="next-btn" width="283" @click="update">ยืนยัน</v-btn>
+                    <v-btn color="primary" class="next-btn" width="283" @click="editStatus">แก้ไขข้อมูล</v-btn>
                 </div>
             </v-form>
         </v-col>
@@ -62,9 +56,11 @@ export default {
         return {
             form: {
                 status: '',
+                family_type: []
             },
             modal: false,
             radios: null,
+            selected: null
         };
     },
     mounted() {
@@ -88,31 +84,45 @@ export default {
     },
     methods: {
         async loadData() {
-            const getProfile = await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).get().then((res) => {
-                this.form.firstname = res.data().firstname
-                this.form.lastname = res.data().lastname
-                this.form.birthday = res.data().birthday
-                this.form.email = res.data().email
-                this.form.phone = res.data().phone
-                this.radios = res.data().gender
+            const getProfile = await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).collection("info").doc("status").get().then((res) => {
+                if (res.data() != null || undefined) {
+                    this.form.status = res.data().status
+                    this.form.family_type = res.data().family_type
+                }
             });
 
             return getProfile
         },
+        validate() {
+            let validate = true
+            const errors = []
+            let errorMsg = ''
+            const validatorField = [
+                'status',
+            ]
+            validatorField.forEach((field) => {
+                if (this.form[field] == '') {
+                    validate = false
+                    errors.push(`${field} can not be null`)
+                }
+            })
+            if (!validate) {
+                this.$store.dispatch('setDialog', {
+                    isShow: true,
+                    title: '',
+                    message: errors.map((error) => error + '<br/>').join('')
+                })
+            }
+
+            console.log(errorMsg);
+            return validate
+        },
         back() {
             this.$router.push('/menu')
         },
-        editProfile() {
-            this.$router.push('/menu/profile/editProfile')
-        },
-        async update() {
-            // if (this.validate()) {
-            //     await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).update(this.form).then((res) => {
-            //         this.$router.push('/menu/address');
-            //     })
-            // }
-            console.log(this.form.status)
-        },
+        editStatus() {
+            this.$router.push('/menu/status/editStatus')
+        }
     }
 };
 </script>
