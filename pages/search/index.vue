@@ -27,8 +27,7 @@
                                         </div>
                                     </v-card-title>
                                     <v-card-actions>
-                                        <v-btn color="primary" width="200" class="mx-auto"
-                                            @click="viewData(item.id)">ดูเพิ่มเติม</v-btn>
+                                        <v-btn color="primary" width="200" class="mx-auto" @click="viewData(item.id)">ดูเพิ่มเติม</v-btn>
                                     </v-card-actions>
                                 </v-card>
                             </v-col>
@@ -60,24 +59,9 @@ export default {
         }
     },
     mounted() {
-        liff.init({
-            liffId: '2001510620-12zg0AQD'
-        }).then(async () => {
-            if (liff.isLoggedIn()) {
-                liff.getProfile().then(async profile => {
-                    this.$store.dispatch('setLine', profile);
-                    await this.checkData()
-                    this.lists = this.sitthi
-                })
-            } else {
-                liff.login()
-            }
-        })
+        this.lists = this.sitthi
     },
     computed: {
-        getLine() {
-            return this.$store.getters.getLine;
-        },
         numberOfPages() {
             return Math.ceil(this.filterLists.length / this.perPage)
         },
@@ -92,16 +76,9 @@ export default {
         }
     },
     methods: {
-        async checkData() {
-            await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).get().then(async (res) => {
-                const data = await res.data()
-                if (data == null) {
-                    this.$router.push('/register')
-                }
-            });
-        },
         viewData(id) {
-            this.$router.push({ path: '/homepage/sitthi/', query: { id } })
+            console.log(id)
+            this.$router.push({ path: '/search/sitthi/', query: { id } })
         }
     }
 }

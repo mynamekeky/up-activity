@@ -22,8 +22,7 @@
                     <img v-else-if="list.type == 'เจ็บป่วย'" src="@/assets/images/sick.png" class="img_header">
                     <img v-else-if="list.type == 'สงเคราะห์บุตร'" src="@/assets/images/family.png" class="img_header">
                     <img v-else-if="list.type == 'คลอดบุตร'" src="@/assets/images/babe.png" class="img_header">
-                    <img v-else-if="list.type == 'ว่างงาน/ส่งเสริมอาชีพ'" src="@/assets/images/kid_rich.png"
-                        class="img_header">
+                    <img v-else-if="list.type == 'ว่างงาน/ส่งเสริมอาชีพ'" src="@/assets/images/kid_rich.png" class="img_header">
                     <img v-else src="@/assets/images/logo_bg.png" class="img_header">
                 </div>
             </v-col>
@@ -123,36 +122,12 @@ export default {
         }
     },
     mounted() {
-        liff.init({
-            liffId: '2001510620-12zg0AQD'
-        }).then(async () => {
-            if (liff.isLoggedIn()) {
-                liff.getProfile().then(async profile => {
-                    this.$store.dispatch('setLine', profile);
-                    await this.checkData()
-                    this.list = this.sitthi[this.$route.query.id - 1]
-                })
-            } else {
-                liff.login()
-            }
-        })
-    },
-    computed: {
-        getLine() {
-            return this.$store.getters.getLine;
-        },
+        // this.getData()
+        this.list = this.sitthi[this.$route.query.id - 1]
     },
     methods: {
-        async checkData() {
-            await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).get().then(async (res) => {
-                const data = await res.data()
-                if (data == null) {
-                    this.$router.push('/register')
-                }
-            });
-        },
         back() {
-            this.$router.push('/homepage')
+            this.$router.push('/search')
         }
     }
 }

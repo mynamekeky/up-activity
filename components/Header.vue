@@ -18,11 +18,11 @@
                         </v-list-item-icon>
                         <v-list-item-title>หน้าหลัก</v-list-item-title>
                     </v-list-item>
-                    <v-list-item>
+                    <v-list-item @click="search">
                         <v-list-item-icon>
                             <v-icon color="primary">search</v-icon>
                         </v-list-item-icon>
-                        <v-list-item-title>ค้นหาสิทธิ</v-list-item-title>
+                        <v-list-item-title>ข้อมูลสิทธิ</v-list-item-title>
                     </v-list-item>
                     <v-list-item @click="menu">
                         <v-list-item-icon>
@@ -45,13 +45,16 @@ export default {
     }),
     methods: {
         home() {
-            this.$router.push('/homepage')
+            this.$router.push('/')
         },
         register() {
             this.$router.push('/register')
         },
         menu() {
             this.$router.push('/menu')
+        },
+        search() {
+            this.$router.push('/homepage')
         }
     }
 };
