@@ -37,8 +37,9 @@
                 <v-col cols="12">
                     <v-form>
                         <div class="mx-12">
-                            <v-text-field v-model="form.firstname" name="name" label="ชื่อ" id="id" required></v-text-field>
-                            <v-text-field v-model="form.lastname" name="name" label="นามสกุล" id="id"
+                            <v-text-field v-model="form.first_name" name="name" label="ชื่อ" id="id"
+                                required></v-text-field>
+                            <v-text-field v-model="form.last_name" name="name" label="นามสกุล" id="id"
                                 required></v-text-field>
                             <v-text-field v-model="form.phone" :rules="phoneRules" @keypress="onlyNumber($event, 10)"
                                 label="เบอร์โทรศัพท์"></v-text-field>
@@ -82,6 +83,25 @@ const REGEX_EMAIL = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))
 const REGEX_PHONE = /^[0]([0-9]{9})*$/
 const REGEX_NUMBER = /^[0-9]*$/
 export default {
+    data() {
+        return {
+            form: {
+                first_name: this.$store.getters.getRegister.first_name,
+                last_name: this.$store.getters.getRegister.last_name,
+                birthday: this.$store.getters.getRegister.birthday,
+                email: this.$store.getters.getRegister.email,
+                phone: this.$store.getters.getRegister.phone,
+                gender: this.$store.getters.getRegister.gender,
+                line_id: this.$store.getters.getRegister.line_id
+            },
+            modal: false,
+            emailValidated: false,
+            phoneValidated: false,
+            emailRules: [value => this.emailValidator(value)],
+            phoneRules: [value => this.phoneValidator(value)],
+            radios: this.$store.getters.getRegister.gender,
+        }
+    },
     mounted() {
         liff.init({
             liffId: '2001510620-12zg0AQD'
@@ -89,6 +109,7 @@ export default {
             if (liff.isLoggedIn()) {
                 liff.getProfile().then(profile => {
                     this.$store.dispatch('setLine', profile);
+                    this.form.line_id = this.$store.getters.getLine.userId;
                     this.isDone();
                 })
             } else {
@@ -101,35 +122,28 @@ export default {
             return this.$store.getters.getLine;
         }
     },
-    data() {
-        return {
-            form: {
-                firstname: this.$store.getters.getRegister.firstname,
-                lastname: this.$store.getters.getRegister.lastname,
-                birthday: this.$store.getters.getRegister.birthday,
-                email: this.$store.getters.getRegister.email,
-                phone: this.$store.getters.getRegister.phone,
-                gender: this.$store.getters.getRegister.gender
-            },
-            modal: false,
-            emailValidated: false,
-            phoneValidated: false,
-            emailRules: [value => this.emailValidator(value)],
-            phoneRules: [value => this.phoneValidator(value)],
-            radios: null,
-        }
-    },
     methods: {
         async isDone() {
-            await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).get().then((res) => {
-                if (res.data() != null) {
-                    this.$router.push('/menu');
-                }
-            });
+            // this.form.line_id = this.$store.getters.getLine.userId
+
+            var requestOptions = {
+                method: 'GET',
+                redirect: 'follow'
+            };
+
+            const data = await fetch(`http://localhost:8080/users/findOneWithLineID/${this.$store.getters.getLine.userId}`, requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    console.log(result)
+                    if (result.statusCode === 200) {
+                        this.$router.push('/menu');
+                    }
+                })
+                .catch(error => console.log('error', error));
         },
         chooseGender(gender) {
             this.form.gender = gender
-            console.log(gender)
+            // console.log(gender)
         },
         phoneValidator(value) {
             this.phoneValidated = false
@@ -169,8 +183,8 @@ export default {
             const errors = []
             let errorMsg = ''
             const validatorField = [
-                'firstname',
-                'lastname',
+                'first_name',
+                'last_name',
                 'email',
                 'birthday'
             ]

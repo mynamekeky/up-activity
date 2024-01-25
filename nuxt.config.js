@@ -39,6 +39,7 @@ export default {
   buildModules: [
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
+    '@nuxtjs/date-fns',
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -48,33 +49,6 @@ export default {
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/content
     '@nuxt/content',
-    [
-      '@nuxtjs/firebase',
-      {
-        config: {
-          apiKey: "AIzaSyA3YIE3H7wlYau3FGetMcBXECm78YZK-oE",
-          authDomain: "up-activity.firebaseapp.com",
-          databaseURL: "https://up-activity-default-rtdb.asia-southeast1.firebasedatabase.app",
-          projectId: "up-activity",
-          storageBucket: "up-activity.appspot.com",
-          messagingSenderId: "129782082423",
-          appId: "1:129782082423:web:740f387fe76d358a9c4f72",
-          measurementId: "G-NNV270GNWZ"
-        },
-        services: {
-          auth: {
-            persistence: 'local',
-            initialize: {
-              onAuthStateChangedAction: 'onAuthStateChangedAction',
-              subscribeManually: false
-            },
-            ssr: false,
-          },
-          firestore: true,
-          storage: true
-        }
-      }
-    ]
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios

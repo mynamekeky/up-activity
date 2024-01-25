@@ -64,25 +64,15 @@
 
                     <v-col cols="4" style="padding-bottom: 0;">
                         <div style="font-weight: 500;">
-                            จำนวนเงินที่ต้องจ่าย
+                            เงินที่ต้องจ่าย
                         </div>
                     </v-col>
                     <v-col cols="8" style="padding-bottom: 0;">
                         <div>
-                            {{ list.cost_title }}
+                            {{ formatNumber }} บาท/เดือน
                         </div>
                     </v-col>
 
-                    <v-col cols="4" style="padding-bottom: 0;">
-                        <div style="font-weight: 500;">
-                            ผู้ออกนโยบาย
-                        </div>
-                    </v-col>
-                    <v-col cols="8" style="padding-bottom: 0;">
-                        <div>
-                            {{ list.author }}
-                        </div>
-                    </v-col>
                     <v-col cols="12" style="padding-bottom: 0;">
                         <div style="font-weight: 500;">
                             รายละเอียดของสิทธิประโยชน์
@@ -91,14 +81,16 @@
                             {{ list.description }}
                         </div>
                     </v-col>
+
                     <v-col cols="12" style="padding-bottom: 0;">
                         <div style="font-weight: 500;">
-                            เงื่อนไข
+                            เงื่อนไขเพิ่มเติม
                         </div>
                         <div class="ml-1" style="white-space: pre-line;">
                             {{ list.condition }}
                         </div>
                     </v-col>
+
                     <v-col cols="12" style="padding-bottom: 0;">
                         <div style="font-weight: 500;">
                             เอกสารแนะนำ
@@ -119,7 +111,6 @@ export default {
         return {
             dialog: false,
             list: [],
-            sitthi: this.$store.getters.getSetthi
         }
     },
     mounted() {
@@ -130,7 +121,7 @@ export default {
                 liff.getProfile().then(async profile => {
                     this.$store.dispatch('setLine', profile);
                     await this.checkData()
-                    this.list = this.sitthi[this.$route.query.id - 1]
+                    this.list = await this.getDataSitthi()
                 })
             } else {
                 liff.login()
@@ -141,18 +132,44 @@ export default {
         getLine() {
             return this.$store.getters.getLine;
         },
+        formatNumber() {
+            return parseFloat(this.list.unit_cost).toFixed(2)
+        }
     },
     methods: {
         async checkData() {
-            await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).get().then(async (res) => {
-                const data = await res.data()
-                if (data == null) {
-                    this.$router.push('/register')
-                }
-            });
+            var requestOptions = {
+                method: 'GET',
+                redirect: 'follow'
+            };
+            const data = await fetch(`http://localhost:8080/users/findOneWithLineID/${this.$store.getters.getLine.userId}`, requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    if (!result.data) {
+                        this.$router.push('/register')
+                    }
+                })
+                .catch(error => console.log('error', error));
+            return data
         },
         back() {
             this.$router.push('/homepage')
+        },
+        async getDataSitthi() {
+            var myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+
+            var requestOptions = {
+                method: 'GET',
+                headers: myHeaders,
+                redirect: 'follow'
+            };
+
+            const data = await fetch(`http://localhost:8080/sitthi/${this.$route.query.id}`, requestOptions)
+                .then(response => response.json())
+                .then(result => { return result })
+                .catch(error => console.log('error', error));
+            return data
         }
     }
 }

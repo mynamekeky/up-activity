@@ -18,10 +18,11 @@
                 <v-col>
                     <v-row>
                         <v-col>
-                            <v-text-field v-model="form.firstname" name="name" label="ชื่อ" id="id" required></v-text-field>
+                            <v-text-field v-model="form.first_name" name="name" label="ชื่อ" id="id"
+                                required></v-text-field>
                         </v-col>
                         <v-col>
-                            <v-text-field v-model="form.lastname" name="name" label="นามสกุล" id="id"
+                            <v-text-field v-model="form.last_name" name="name" label="นามสกุล" id="id"
                                 required></v-text-field>
                         </v-col>
                     </v-row>
@@ -71,9 +72,10 @@ const REGEX_NUMBER = /^[0-9]*$/
 export default {
     data() {
         return {
+            id: '',
             form: {
-                firstname: '',
-                lastname: '',
+                first_name: '',
+                last_name: '',
                 birthday: null,
                 email: '',
                 phone: '',
@@ -110,19 +112,29 @@ export default {
             this.$router.push('/menu/profile')
         },
         async loadData() {
-            const getProfile = await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).get().then((res) => {
-                this.form.firstname = res.data().firstname
-                this.form.lastname = res.data().lastname
-                this.form.birthday = res.data().birthday
-                this.form.email = res.data().email
-                this.form.phone = res.data().phone
-                this.radios = res.data().gender
-                this.form.gender = res.data().gender
-                let data = res.data()
-                return data
-            });
-            console.log(getProfile)
-            return getProfile
+            var requestOptions = {
+                method: 'GET',
+                redirect: 'follow'
+            };
+
+            const data = await fetch(`http://localhost:8080/users/findOneWithLineID/${this.$store.getters.getLine.userId}`, requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.statusCode === 404) {
+                        this.$router.push('/register');
+                    }
+                    this.id = result.data.id
+                    this.form.first_name = result.data.first_name
+                    this.form.last_name = result.data.last_name
+                    this.form.birthday = this.$dateFns.format(result.data.birthday, 'yyyy-MM-dd')
+                    this.form.email = result.data.email
+                    this.form.phone = result.data.phone
+                    this.form.gender = result.data.gender
+                    this.radios = result.data.gender
+                })
+                .catch(error => console.log('error', error));
+
+            return data
         },
         chooseGender(gender) {
             this.form.gender = gender
@@ -165,8 +177,8 @@ export default {
             const errors = []
             let errorMsg = ''
             const validatorField = [
-                'firstname',
-                'lastname',
+                'first_name',
+                'last_name',
                 'email',
                 'birthday'
             ]
@@ -196,9 +208,24 @@ export default {
         },
         async update() {
             if (this.validate()) {
-                await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).update(this.form).then((res) => {
-                    this.$router.push('/menu/profile');
-                })
+                var myHeaders = new Headers();
+                myHeaders.append("Content-Type", "application/json");
+                var raw = JSON.stringify(this.form);
+
+                var requestOptions = {
+                    method: 'PATCH',
+                    headers: myHeaders,
+                    body: raw,
+                    redirect: 'follow'
+                };
+                await fetch(`http://localhost:8080/users/${this.id}`, requestOptions)
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.statusCode === 200) {
+                            this.$router.push('/menu/profile');
+                        }
+                    })
+                    .catch(error => console.log('error', error));
             }
         },
     }

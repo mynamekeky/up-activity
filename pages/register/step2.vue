@@ -27,7 +27,7 @@
                                 required></v-text-field>
                             <v-text-field v-model="form.village" name="village" label="หมู่บ้าน" id="id"
                                 required></v-text-field>
-                            <v-text-field v-model="form.subdistrict" name="subdistrict" label="แขวง/ตำบล" id="id"
+                            <v-text-field v-model="form.sub_district" name="sub_district" label="แขวง/ตำบล" id="id"
                                 required></v-text-field>
                             <v-text-field v-model="form.district" name="district" label="เขต/อำเภอ" id="id"
                                 required></v-text-field>
@@ -54,7 +54,7 @@ export default {
                 village: this.$store.getters.getRegister.village,
                 province: this.$store.getters.getRegister.province,
                 district: this.$store.getters.getRegister.district,
-                subdistrict: this.$store.getters.getRegister.subdistrict,
+                sub_district: this.$store.getters.getRegister.sub_district,
             },
             modal: false
         }
@@ -70,7 +70,7 @@ export default {
                 'village',
                 'province',
                 'district',
-                'subdistrict',
+                'sub_district',
             ]
             validatorField.forEach((field) => {
                 if (this.form[field] == '') {
@@ -89,12 +89,30 @@ export default {
             console.log(errorMsg);
             return validate
         },
-        register() {
+        async register() {
             if (this.validate()) {
-                this.$store.dispatch('setRegister', this.form)
-                this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).set(this.$store.getters.getRegister).then((res) => {
-                    this.$router.push('/menu');
-                })
+                await this.$store.dispatch('setRegister', this.form)
+
+                var myHeaders = new Headers();
+                myHeaders.append("Content-Type", "application/json");
+                var raw = JSON.stringify(this.$store.getters.getRegister);
+
+
+                var requestOptions = {
+                    method: 'POST',
+                    headers: myHeaders,
+                    body: raw,
+                    redirect: 'follow'
+                };
+
+                await fetch("http://localhost:8080/users", requestOptions)
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.statusCode === 200) {
+                            this.$router.push('/menu')
+                        }
+                    })
+                    .catch(error => console.log('error', error));
             }
         },
         back() {

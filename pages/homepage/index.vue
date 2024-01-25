@@ -2,10 +2,18 @@
     <v-container>
         <v-row>
             <v-col>
-                <v-data-iterator :items="filterLists" :page.sync="page" :items-per-page.sync="perPage" hide-default-footer>
+                <v-data-iterator :items="lists" :page.sync="page" :items-per-page.sync="perPage" hide-default-footer>
                     <template v-slot:header>
-                        <v-text-field prepend-icon="search" label="Search" v-model="search"
-                            class="mx-3 mt-5"></v-text-field>
+                        <div class="d-flex justify-content-between">
+                            <v-text-field label="Search" v-model="search" class="mx-3 mt-5"
+                                @keyup.enter="getDataSitthi(search)"></v-text-field>
+                            <v-btn color="primary" class="mt-7" @click="getDataSitthi(search)">
+                                <v-icon>search</v-icon>
+                            </v-btn>
+                        </div>
+                        <div class="mb-2 text-right">
+                            จำนวนสิทธิที่เกี่ยวข้อง {{ lists.length }} สิทธิ
+                        </div>
                     </template>
 
                     <template v-slot:default="props">
@@ -53,8 +61,7 @@ export default {
         return {
             dialog: false,
             lists: [],
-            sitthi: this.$store.getters.getSetthi,
-            search: null,
+            search: '',
             page: 1,
             perPage: 5,
         }
@@ -67,7 +74,7 @@ export default {
                 liff.getProfile().then(async profile => {
                     this.$store.dispatch('setLine', profile);
                     await this.checkData()
-                    this.lists = this.sitthi
+                    await this.getDataSitthi(this.$route.query.search)
                 })
             } else {
                 liff.login()
@@ -79,29 +86,73 @@ export default {
             return this.$store.getters.getLine;
         },
         numberOfPages() {
-            return Math.ceil(this.filterLists.length / this.perPage)
+            return Math.ceil(this.lists.length / this.perPage)
         },
-        filterLists() {
-            let data = this.lists
-            if (this.search != null) {
-                data = this.lists.filter((list) => {
-                    return list.name.match(this.search) || list.type.match(this.search) || list.code.match(this.search)
-                })
-            }
-            return data
-        }
     },
     methods: {
         async checkData() {
-            await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).get().then(async (res) => {
-                const data = await res.data()
-                if (data == null) {
-                    this.$router.push('/register')
-                }
-            });
+            var requestOptions = {
+                method: 'GET',
+                redirect: 'follow'
+            };
+            const data = await fetch(`http://localhost:8080/users/findOneWithLineID/${this.$store.getters.getLine.userId}`, requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    if (!result.data) {
+                        this.$router.push('/register')
+                    }
+                })
+                .catch(error => console.log('error', error));
+            return data
         },
         viewData(id) {
             this.$router.push({ path: '/homepage/sitthi/', query: { id } })
+        },
+        async getDataSitthi(search) {
+            let data = []
+            var myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+
+            var requestOptions = {
+                method: 'GET',
+                headers: myHeaders,
+                redirect: 'follow'
+            };
+            if (search) {
+                this.$router.push({ path: '/homepage?search=', query: { search } })
+                data = await fetch(`http://localhost:8080/sitthi?search=${search}`, requestOptions)
+                    .then(response => response.json())
+                    .then(result => {
+                        this.lists = result
+                    })
+                    .catch(error => console.log('error', error));
+            } else {
+                data = await fetch(`http://localhost:8080/sitthi?search=`, requestOptions)
+                    .then(response => response.json())
+                    .then(result => { this.lists = result })
+                    .catch(error => console.log('error', error));
+            }
+
+            return data
+        },
+        async searchSitthi(search) {
+            var myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+
+            var requestOptions = {
+                method: 'GET',
+                headers: myHeaders,
+                redirect: 'follow'
+            };
+            if (search) {
+                this.$router.push({ path: '/homepage?search=', query: { search } })
+                this.list = await fetch(`http://localhost:8080/sitthi?search=${search}`, requestOptions)
+                    .then(response => response.json())
+                    .then(result => {
+                        this.lists = result
+                    })
+                    .catch(error => console.log('error', error));
+            }
         }
     }
 }

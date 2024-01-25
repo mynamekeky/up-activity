@@ -103,15 +103,24 @@ export default {
     },
     methods: {
         async loadData() {
-            const getProfile = await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).collection("info").doc("rights").get().then((res) => {
-                if (res.data() != null || undefined) {
-                    this.form.other = res.data().other
-                    this.form.other_value = res.data().other_value
-                    this.form.right_type = res.data().right_type
-                }
-            });
+            var requestOptions = {
+                method: 'GET',
+                redirect: 'follow'
+            };
 
-            return getProfile
+            const data = await fetch(`http://localhost:8080/users/findOneWithLineID/${this.$store.getters.getLine.userId}`, requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.statusCode === 404) {
+                        this.$router.push('/register');
+                    }
+                    this.form.other = result.right?.other
+                    this.form.right_type = result.right?.right_type
+                    this.form.other_value = result.right?.other_value
+                })
+                .catch(error => console.log('error', error));
+
+            return data
         },
         back() {
             this.$router.push('/menu')

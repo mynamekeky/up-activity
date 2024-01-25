@@ -18,10 +18,10 @@
                 <v-col>
                     <v-row>
                         <v-col>
-                            <v-text-field v-model="form.firstname" name="name" label="ชื่อ" id="id" readonly></v-text-field>
+                            <v-text-field v-model="form.first_name" name="name" label="ชื่อ" id="id" readonly></v-text-field>
                         </v-col>
                         <v-col>
-                            <v-text-field v-model="form.lastname" name="name" label="นามสกุล" id="id"
+                            <v-text-field v-model="form.last_name" name="name" label="นามสกุล" id="id"
                                 readonly></v-text-field>
                         </v-col>
                     </v-row>
@@ -56,8 +56,8 @@ export default {
     data() {
         return {
             form: {
-                firstname: '',
-                lastname: '',
+                first_name: '',
+                last_name: '',
                 birthday: null,
                 email: '',
                 phone: '',
@@ -87,16 +87,28 @@ export default {
     },
     methods: {
         async loadData() {
-            const getProfile = await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).get().then((res) => {
-                this.form.firstname = res.data().firstname
-                this.form.lastname = res.data().lastname
-                this.form.birthday = res.data().birthday
-                this.form.email = res.data().email
-                this.form.phone = res.data().phone
-                this.radios = res.data().gender
-            });
-            
-            return getProfile
+            var requestOptions = {
+                method: 'GET',
+                redirect: 'follow'
+            };
+
+            const data = await fetch(`http://localhost:8080/users/findOneWithLineID/${this.$store.getters.getLine.userId}`, requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.statusCode === 404) {
+                        this.$router.push('/register');
+                    }
+                    this.form.first_name = result.data.first_name
+                    this.form.last_name = result.data.last_name
+                    this.form.birthday = this.$dateFns.format(result.data.birthday, 'yyyy-MM-dd')
+                    this.form.email = result.data.email
+                    this.form.phone = result.data.phone
+                    this.radios = result.data.gender
+                    console.log(result)
+                })
+                .catch(error => console.log('error', error));
+
+            return data
         },
         back() {
             this.$router.push('/menu')

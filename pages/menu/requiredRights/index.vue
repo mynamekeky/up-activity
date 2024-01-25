@@ -19,19 +19,19 @@
                     <div>
                         <p class="mt-1" style="font-size: 13px;">สิทธิที่ท่านต้องการ (สามารถเลือกได้มากกว่า 1 อย่าง)
                         </p>
-                        <v-checkbox v-model="form.required_rights_type" label="คลอดบุตร" value="คลอดบุตร"
+                        <v-checkbox v-model="form.required_right_type" label="คลอดบุตร" value="คลอดบุตร"
                             hide-details readonly></v-checkbox>
-                        <v-checkbox v-model="form.required_rights_type" label="สงเคราะห์บุตร" value="สงเคราะห์บุตร"
+                        <v-checkbox v-model="form.required_right_type" label="สงเคราะห์บุตร" value="สงเคราะห์บุตร"
                             hide-details readonly></v-checkbox>
-                        <v-checkbox v-model="form.required_rights_type" label="เจ็บป่วย" value="เจ็บป่วย"
+                        <v-checkbox v-model="form.required_right_type" label="เจ็บป่วย" value="เจ็บป่วย"
                             hide-details readonly></v-checkbox>
-                        <v-checkbox v-model="form.required_rights_type" label="ว่างงาน/ส่งเสริมอาชีพ"
+                        <v-checkbox v-model="form.required_right_type" label="ว่างงาน/ส่งเสริมอาชีพ"
                             value="ว่างงาน/ส่งเสริมอาชีพ" hide-details readonly></v-checkbox>
-                        <v-checkbox v-model="form.required_rights_type" label="ทุพพลภาพ" value="ทุพพลภาพ"
+                        <v-checkbox v-model="form.required_right_type" label="ทุพพลภาพ" value="ทุพพลภาพ"
                             hide-details readonly></v-checkbox>
-                        <v-checkbox v-model="form.required_rights_type" label="ชราภาพ" value="ชราภาพ"
+                        <v-checkbox v-model="form.required_right_type" label="ชราภาพ" value="ชราภาพ"
                             hide-details readonly></v-checkbox>
-                        <v-checkbox v-model="form.required_rights_type" label="เสียชีวิต" value="เสียชีวิต"
+                        <v-checkbox v-model="form.required_right_type" label="เสียชีวิต" value="เสียชีวิต"
                             hide-details readonly></v-checkbox>
                     </div>
                     <div class="mt-8">
@@ -52,7 +52,7 @@ export default {
     data() {
         return {
             form: {
-                required_rights_type: [],
+                required_right_type: [],
                 cost_per_month: ''
             },
             modal: false,
@@ -80,14 +80,23 @@ export default {
     },
     methods: {
         async loadData() {
-            const getProfile = await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).collection("info").doc("requiredRights").get().then((res) => {
-                if (res.data() != null || undefined) {
-                    this.form.required_rights_type = res.data().required_rights_type
-                    this.form.cost_per_month = res.data().cost_per_month
-                }
-            });
+            var requestOptions = {
+                method: 'GET',
+                redirect: 'follow'
+            };
 
-            return getProfile
+            const data = await fetch(`http://localhost:8080/users/findOneWithLineID/${this.$store.getters.getLine.userId}`, requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.statusCode === 404) {
+                        this.$router.push('/register');
+                    }
+                    this.form.required_right_type = result.reqRight?.required_right_type
+                    this.form.cost_per_month = result.reqRight?.cost_per_month
+                })
+                .catch(error => console.log('error', error));
+
+            return data
         },
         back() {
             this.$router.push('/menu')

@@ -75,6 +75,7 @@ export default {
     data() {
         return {
             form: {
+                user_id: '',
                 other: false,
                 right_type: [],
                 other_value: ''
@@ -104,23 +105,49 @@ export default {
     },
     methods: {
         async loadData() {
-            const getProfile = await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).collection("info").doc("rights").get().then((res) => {
-                if (res.data() != null || undefined) {
-                    this.form.other = res.data().other
-                    this.form.other_value = res.data().other_value
-                    this.form.right_type = res.data().right_type
-                }
-            });
+            var requestOptions = {
+                method: 'GET',
+                redirect: 'follow'
+            };
 
-            return getProfile
+            const data = await fetch(`http://localhost:8080/users/findOneWithLineID/${this.$store.getters.getLine.userId}`, requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.statusCode === 404) {
+                        this.$router.push('/register');
+                    }
+
+                    this.form.user_id = result.data.id
+                    this.form.other = result.right.other
+                    this.form.right_type = result.right.right_type
+                    this.form.other_value = result.right.other_value
+                })
+                .catch(error => console.log('error', error));
+
+            return data
         },
         back() {
-            this.$router.push('/menu')
+            this.$router.push('/menu/rights')
         },
         async update() {
-            await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).collection("info").doc("rights").update(this.form).then((res) => {
-                this.$router.push('/menu/rights');
-            })
+            var myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            var raw = JSON.stringify(this.form);
+
+            var requestOptions = {
+                method: 'PATCH',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            };
+            await fetch(`http://localhost:8080/rights/${this.form.user_id}`, requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.statusCode === 200) {
+                        this.$router.push('/menu/rights');
+                    }
+                })
+                .catch(error => console.log('error', error));
         },
         clearValue() {
             this.form.other_value = '';

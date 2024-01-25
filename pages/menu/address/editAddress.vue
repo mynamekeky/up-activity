@@ -32,7 +32,7 @@
                                 required></v-text-field>
                         </v-col>
                         <v-col>
-                            <v-text-field v-model="form.subdistrict" name="subdistrict" label="แขวง/ตำบล" id="id"
+                            <v-text-field v-model="form.sub_district" name="sub_district" label="แขวง/ตำบล" id="id"
                                 required></v-text-field>
                         </v-col>
                     </v-row>
@@ -59,13 +59,14 @@
 export default {
     data() {
         return {
+            id: '',
             form: {
                 house_no: '',
                 village_no: '',
                 village: '',
                 province: '',
                 district: '',
-                subdistrict: '',
+                sub_district: '',
             },
             modal: false,
         };
@@ -91,16 +92,28 @@ export default {
     },
     methods: {
         async loadData() {
-            const getProfile = await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).get().then((res) => {
-                this.form.house_no = res.data().house_no
-                this.form.village_no = res.data().village_no
-                this.form.village = res.data().village
-                this.form.province = res.data().province
-                this.form.district = res.data().district
-                this.form.subdistrict = res.data().subdistrict
-            });
+            var requestOptions = {
+                method: 'GET',
+                redirect: 'follow'
+            };
 
-            return getProfile
+            const data = await fetch(`http://localhost:8080/users/findOneWithLineID/${this.$store.getters.getLine.userId}`, requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.statusCode === 404) {
+                        this.$router.push('/register');
+                    }
+                    this.id = result.data.id
+                    this.form.house_no = result.data.house_no
+                    this.form.village_no = result.data.village_no
+                    this.form.village = result.data.village
+                    this.form.province = result.data.province
+                    this.form.district = result.data.district
+                    this.form.sub_district = result.data.sub_district
+                })
+                .catch(error => console.log('error', error));
+
+            return data
         },
         validate() {
             let validate = true
@@ -112,7 +125,7 @@ export default {
                 'village',
                 'province',
                 'district',
-                'subdistrict',
+                'sub_district',
             ]
             validatorField.forEach((field) => {
                 if (this.form[field] == '') {
@@ -136,9 +149,24 @@ export default {
         },
         async update() {
             if (this.validate()) {
-                await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).update(this.form).then((res) => {
-                    this.$router.push('/menu/address');
-                })
+                var myHeaders = new Headers();
+                myHeaders.append("Content-Type", "application/json");
+                var raw = JSON.stringify(this.form);
+
+                var requestOptions = {
+                    method: 'PATCH',
+                    headers: myHeaders,
+                    body: raw,
+                    redirect: 'follow'
+                };
+                await fetch(`http://localhost:8080/users/${this.id}`, requestOptions)
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.statusCode === 200) {
+                            this.$router.push('/menu/address');
+                        }
+                    })
+                    .catch(error => console.log('error', error));
             }
         },
     }

@@ -20,35 +20,25 @@
                         <p class="mt-1" style="font-size: 13px;">ปัจจุบันท่านได้ส่งเงินเพื่อดูแลสุขภาพหรือสวัสดิการ
                             สำหรับตนเองให้แก่องค์กรใดบ้าง (เลือกได้มากกว่า 1 ข้อ)
                         </p>
-                        <v-checkbox v-model="form.benefit_type"
-                            label="บริษัทประกันชีวิตเอกชน"
+                        <v-checkbox v-model="form.benefit_type" label="บริษัทประกันชีวิตเอกชน"
                             value="บริษัทประกันชีวิตเอกชน" hide-details></v-checkbox>
-                        <v-checkbox v-model="form.benefit_type"
-                            label="กองทุนการออมแห่งชาติ"
-                            value="กองทุนการออมแห่งชาติ" hide-details></v-checkbox>
-                        <v-checkbox v-model="form.benefit_type"
-                            label="กองทุนสวัสดิการชุมชน"
-                            value="กองทุนสวัสดิการชุมชน" hide-details></v-checkbox>
-                        <v-checkbox v-model="form.benefit_type"
-                            label="สหกรณ์รูปแบบต่างๆ"
-                            value="สหกรณ์รูปแบบต่างๆ" hide-details></v-checkbox>
-                        <v-checkbox v-model="form.benefit_type"
-                            label="กลุ่มสัจจะออมทรัพย์"
-                            value="กลุ่มสัจจะออมทรัพย์" hide-details></v-checkbox>
-                        <v-checkbox v-model="form.benefit_type"
-                            label="ชมรมฌาปนกิจ"
-                            value="ชมรมฌาปนกิจ" hide-details></v-checkbox>
-                        <v-checkbox v-model="form.benefit_type"
-                            label="ประกันสังคมมาตรา33"
-                            value="ประกันสังคมมาตรา33" hide-details></v-checkbox>
-                        <v-checkbox v-model="form.benefit_type"
-                            label="ประกันสังคมมาตรา39"
-                            value="ประกันสังคมมาตรา39" hide-details></v-checkbox>
-                        <v-checkbox v-model="form.benefit_type"
-                            label="ประกันสังคมมาตรา40"
-                            value="ประกันสังคมมาตรา40" hide-details></v-checkbox>
-                        <v-checkbox v-model="form.benefit_type"
-                            label="ไม่มีการส่งเงินให้กับองค์ใดๆ"
+                        <v-checkbox v-model="form.benefit_type" label="กองทุนการออมแห่งชาติ" value="กองทุนการออมแห่งชาติ"
+                            hide-details></v-checkbox>
+                        <v-checkbox v-model="form.benefit_type" label="กองทุนสวัสดิการชุมชน" value="กองทุนสวัสดิการชุมชน"
+                            hide-details></v-checkbox>
+                        <v-checkbox v-model="form.benefit_type" label="สหกรณ์รูปแบบต่างๆ" value="สหกรณ์รูปแบบต่างๆ"
+                            hide-details></v-checkbox>
+                        <v-checkbox v-model="form.benefit_type" label="กลุ่มสัจจะออมทรัพย์" value="กลุ่มสัจจะออมทรัพย์"
+                            hide-details></v-checkbox>
+                        <v-checkbox v-model="form.benefit_type" label="ชมรมฌาปนกิจ" value="ชมรมฌาปนกิจ"
+                            hide-details></v-checkbox>
+                        <v-checkbox v-model="form.benefit_type" label="ประกันสังคมมาตรา33" value="ประกันสังคมมาตรา33"
+                            hide-details></v-checkbox>
+                        <v-checkbox v-model="form.benefit_type" label="ประกันสังคมมาตรา39" value="ประกันสังคมมาตรา39"
+                            hide-details></v-checkbox>
+                        <v-checkbox v-model="form.benefit_type" label="ประกันสังคมมาตรา40" value="ประกันสังคมมาตรา40"
+                            hide-details></v-checkbox>
+                        <v-checkbox v-model="form.benefit_type" label="ไม่มีการส่งเงินให้กับองค์ใดๆ"
                             value="ไม่มีการส่งเงินให้กับองค์ใดๆ" hide-details></v-checkbox>
                     </div>
                 </v-col>
@@ -65,6 +55,7 @@ export default {
     data() {
         return {
             form: {
+                user_id: '',
                 benefit_type: [],
             },
             modal: false,
@@ -92,21 +83,48 @@ export default {
     },
     methods: {
         async loadData() {
-            const getProfile = await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).collection("info").doc("benefit").get().then((res) => {
-                if (res.data() != null || undefined) {
-                    this.$router.push('/menu/benefit');
-                }
-            });
+            var requestOptions = {
+                method: 'GET',
+                redirect: 'follow'
+            };
 
-            return getProfile
+            const data = await fetch(`http://localhost:8080/users/findOneWithLineID/${this.$store.getters.getLine.userId}`, requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.statusCode === 404) {
+                        this.$router.push('/register');
+                    }
+                    if (result.benefit) {
+                        this.$router.push('/menu/benefit');
+                    }
+                    this.form.user_id = result.data.id
+                })
+                .catch(error => console.log('error', error));
+
+            return data
         },
         back() {
             this.$router.push('/menu')
         },
         async create() {
-            await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).collection("info").doc("benefit").set(this.form).then((res) => {
-                this.$router.push('/menu/benefit');
-            })
+            var myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            var raw = JSON.stringify(this.form);
+
+            var requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            };
+            await fetch(`http://localhost:8080/benefit`, requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.statusCode === 200) {
+                        this.$router.push('/menu/benefit');
+                    }
+                })
+                .catch(error => console.log('error', error));
         },
     }
 };

@@ -84,14 +84,23 @@ export default {
     },
     methods: {
         async loadData() {
-            const getProfile = await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).collection("info").doc("status").get().then((res) => {
-                if (res.data() != null || undefined) {
-                    this.form.status = res.data().status
-                    this.form.family_type = res.data().family_type
-                }
-            });
+            var requestOptions = {
+                method: 'GET',
+                redirect: 'follow'
+            };
 
-            return getProfile
+            const data = await fetch(`http://localhost:8080/users/findOneWithLineID/${this.$store.getters.getLine.userId}`, requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.statusCode === 404) {
+                        this.$router.push('/register');
+                    }
+                    this.form.status = result.status?.status
+                    this.form.family_type = result.status?.family_type
+                })
+                .catch(error => console.log('error', error));
+
+            return data
         },
         validate() {
             let validate = true
