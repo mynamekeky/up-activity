@@ -6,6 +6,9 @@
                     <template v-slot:header>
                         <v-text-field prepend-icon="search" label="Search" v-model="search"
                             class="mx-3 mt-5"></v-text-field>
+                        <div class="mb-2 text-right">
+                            จำนวนสิทธิที่เกี่ยวข้อง {{ filterLists.length }} สิทธิ
+                        </div>
                     </template>
 
                     <template v-slot:default="props">
@@ -28,7 +31,7 @@
                                     </v-card-title>
                                     <v-card-actions>
                                         <v-btn color="primary" width="200" class="mx-auto"
-                                            @click="viewData(item.id)">ดูเพิ่มเติม</v-btn>
+                                            @click="viewData(item.id, search)">ดูเพิ่มเติม</v-btn>
                                     </v-card-actions>
                                 </v-card>
                             </v-col>
@@ -52,27 +55,17 @@ export default {
     data() {
         return {
             dialog: false,
-            lists: [],
-            sitthi: this.$store.getters.getSetthi,
+            // lists: [],
+            // sitthi: this.$store.getters.getSetthi,
+            lists: this.$store.getters.getSetthi,
             search: null,
             page: 1,
             perPage: 5,
         }
     },
     mounted() {
-        liff.init({
-            liffId: '2001510620-12zg0AQD'
-        }).then(async () => {
-            if (liff.isLoggedIn()) {
-                liff.getProfile().then(async profile => {
-                    this.$store.dispatch('setLine', profile);
-                    await this.checkData()
-                    this.lists = this.sitthi
-                })
-            } else {
-                liff.login()
-            }
-        })
+        // this.lists = this.sitthi
+        this.search = this.$route.query.search
     },
     computed: {
         getLine() {
@@ -92,16 +85,13 @@ export default {
         }
     },
     methods: {
-        async checkData() {
-            await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).get().then(async (res) => {
-                const data = await res.data()
-                if (data == null) {
-                    this.$router.push('/register')
-                }
-            });
-        },
-        viewData(id) {
-            this.$router.push({ path: '/homepage/sitthi/', query: { id } })
+        viewData(id, search) {
+            if (this.$route.query.search) {
+                search = this.$route.query.search
+                this.$router.push({ path: '/homepage/sitthi/', query: { id, search } })
+            } else {
+                this.$router.push({ path: '/homepage/sitthi/', query: { id } })
+            }
         }
     }
 }
