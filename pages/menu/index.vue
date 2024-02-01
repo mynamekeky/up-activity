@@ -270,7 +270,7 @@ export default {
             dataRequiredRights: ''
         }
     },
-    async mounted() {
+    mounted() {
         liff.init({
             liffId: '2001510620-12zg0AQD'
         }).then(async () => {
@@ -278,13 +278,12 @@ export default {
                 liff.getProfile().then(async profile => {
                     this.$store.dispatch('setLine', profile);
                     await this.checkData()
-                    await this.allData()
-                    // this.dataStatus = await this.getDataStatus()
-                    // this.dataPersonal = await this.getDataPersonal()
-                    // this.dataSalary = await this.getDataSalary()
-                    // this.dataRights = await this.getDataRights()
-                    // this.dataBenefit = await this.getDataBenefit()
-                    // this.dataRequiredRights = await this.getDataRequiredRights()
+                    this.dataStatus = await this.getDataStatus()
+                    this.dataPersonal = await this.getDataPersonal()
+                    this.dataSalary = await this.getDataSalary()
+                    this.dataRights = await this.getDataRights()
+                    this.dataBenefit = await this.getDataBenefit()
+                    this.dataRequiredRights = await this.getDataRequiredRights()
                 })
             } else {
                 liff.login()
@@ -311,135 +310,78 @@ export default {
         address() {
             this.$router.push('/menu/address')
         },
-        async allData() {
-            const DB = await this.$fire.firestore.collection("members").doc('U46ac28386c551e3d2272269b823c0475').collection("info")
-            //for Status
-            DB.doc("status").get().then(async (res) => {
-                const data = res.data()
+        async getDataStatus() {
+            const getData = await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).collection("info").doc("status").get().then(async (res) => {
+                let data = res.data()
                 if (data == null) {
-                    this.dataStatus = null
+                    data = null
                 } else {
-                    this.dataStatus = res.data()
+                    data = res.data()
                 }
+                return await data
             })
-
-            DB.doc("personal").get().then(async (res) => {
-                const data = res.data()
-                if (data == null) {
-                    this.dataPersonal = null
-                } else {
-                    this.dataPersonal = res.data()
-                }
-            })
-
-            DB.doc("salary").get().then(async (res) => {
-                const data = res.data()
-                if (data == null) {
-                    this.dataSalary = null
-                } else {
-                    this.dataSalary = res.data()
-                }
-            })
-
-            DB.doc("rights").get().then(async (res) => {
-                const data = res.data()
-                if (data == null) {
-                    this.dataRights = null
-                } else {
-                    this.dataRights = res.data()
-                }
-            })
-
-            DB.doc("benefit").get().then(async (res) => {
-                const data = res.data()
-                if (data == null) {
-                    this.dataBenefit = null
-                } else {
-                    this.dataBenefit = res.data()
-                }
-            })
-
-            DB.doc("requiredRights").get().then(async (res) => {
-                const data = res.data()
-                if (data == null) {
-                    this.dataRequiredRights = null
-                } else {
-                    this.dataRequiredRights = res.data()
-                }
-            })
+            return await getData
         },
-        // async getDataStatus() {
-        //     const getData = await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).collection("info").doc("status").get().then(async (res) => {
-        //         let data = res.data()
-        //         if (data == null) {
-        //             data = null
-        //         } else {
-        //             data = res.data()
-        //         }
-        //         return await data
-        //     })
-        //     return await getData
-        // },
-        // async getDataPersonal() {
-        //     const getData = await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).collection("info").doc("personal").get().then(async (res) => {
-        //         let data = res.data()
-        //         if (data == null) {
-        //             data = null
-        //         } else {
-        //             data = res.data()
-        //         }
-        //         return await data
-        //     })
-        //     return getData
-        // },
-        // async getDataSalary() {
-        //     const getData = await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).collection("info").doc("salary").get().then(async (res) => {
-        //         let data = res.data()
-        //         if (data == null) {
-        //             data = null
-        //         } else {
-        //             data = res.data()
-        //         }
-        //         return await data
-        //     })
-        //     return getData
-        // },
-        // async getDataRights() {
-        //     const getData = await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).collection("info").doc("rights").get().then(async (res) => {
-        //         let data = res.data()
-        //         if (data == null) {
-        //             data = null
-        //         } else {
-        //             data = res.data()
-        //         }
-        //         return await data
-        //     })
-        //     return getData
-        // },
-        // async getDataBenefit() {
-        //     const getData = await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).collection("info").doc("benefit").get().then(async (res) => {
-        //         let data = res.data()
-        //         if (data == null) {
-        //             data = null
-        //         } else {
-        //             data = res.data()
-        //         }
-        //         return await data
-        //     })
-        //     return getData
-        // },
-        // async getDataRequiredRights() {
-        //     const getData = await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).collection("info").doc("requiredRights").get().then(async (res) => {
-        //         let data = res.data()
-        //         if (data == null) {
-        //             data = null
-        //         } else {
-        //             data = res.data()
-        //         }
-        //         return await data
-        //     })
-        //     return getData
-        // },
+        async getDataPersonal() {
+            const getData = await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).collection("info").doc("personal").get().then(async (res) => {
+                let data = res.data()
+                if (data == null) {
+                    data = null
+                } else {
+                    data = res.data()
+                }
+                return await data
+            })
+            return getData
+        },
+        async getDataSalary() {
+            const getData = await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).collection("info").doc("salary").get().then(async (res) => {
+                let data = res.data()
+                if (data == null) {
+                    data = null
+                } else {
+                    data = res.data()
+                }
+                return await data
+            })
+            return getData
+        },
+        async getDataRights() {
+            const getData = await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).collection("info").doc("rights").get().then(async (res) => {
+                let data = res.data()
+                if (data == null) {
+                    data = null
+                } else {
+                    data = res.data()
+                }
+                return await data
+            })
+            return getData
+        },
+        async getDataBenefit() {
+            const getData = await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).collection("info").doc("benefit").get().then(async (res) => {
+                let data = res.data()
+                if (data == null) {
+                    data = null
+                } else {
+                    data = res.data()
+                }
+                return await data
+            })
+            return getData
+        },
+        async getDataRequiredRights() {
+            const getData = await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).collection("info").doc("requiredRights").get().then(async (res) => {
+                let data = res.data()
+                if (data == null) {
+                    data = null
+                } else {
+                    data = res.data()
+                }
+                return await data
+            })
+            return getData
+        },
         async status() {
             if (await this.dataStatus == null || undefined) {
                 this.$router.push('/menu/status/createStatus')

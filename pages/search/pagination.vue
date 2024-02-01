@@ -1,6 +1,6 @@
 <template>
     <v-app>
-        <v-content class="py-3 px-5">
+        <v-main class="py-3 px-5">
             <v-data-iterator :items="beers" :items-per-page.sync="ipp" :page.sync="page" hide-default-footer>
                 <template v-slot:header>
                     <v-toolbar dark color="blue darken-3" class="mb-1">
@@ -67,7 +67,7 @@
                     </v-row>
                 </template>
             </v-data-iterator>
-        </v-content>
+        </v-main>
     </v-app>
 </template>
 

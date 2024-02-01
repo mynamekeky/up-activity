@@ -118,24 +118,10 @@ export default {
     data() {
         return {
             dialog: false,
-            list: [],
-            sitthi: this.$store.getters.getSetthi
+            list: this.$store.getters.getSetthi[this.$route.query.id - 1],
         }
     },
     mounted() {
-        liff.init({
-            liffId: '2001510620-12zg0AQD'
-        }).then(async () => {
-            if (liff.isLoggedIn()) {
-                liff.getProfile().then(async profile => {
-                    this.$store.dispatch('setLine', profile);
-                    await this.checkData()
-                    this.list = this.sitthi[this.$route.query.id - 1]
-                })
-            } else {
-                liff.login()
-            }
-        })
     },
     computed: {
         getLine() {
@@ -143,16 +129,13 @@ export default {
         },
     },
     methods: {
-        async checkData() {
-            await this.$fire.firestore.collection("members").doc(this.$store.getters.getLine.userId).get().then(async (res) => {
-                const data = await res.data()
-                if (data == null) {
-                    this.$router.push('/register')
-                }
-            });
-        },
         back() {
-            this.$router.push('/homepage')
+            if (this.$route.query.search) {
+                let search = this.$route.query.search
+                this.$router.push({ path: '/homepage?search=', query: { search } })
+            } else {
+                this.$router.push('/homepage')
+            }
         }
     }
 }
